@@ -4,7 +4,7 @@
 ผู้ใช้สามารถค้นหา keyword ใน directory ได้ผ่าน CLI
 
 ```bash
-codefind find "login" .
+codefind "login" .
 ```
 
 ## FR-002 Recursive Directory Search
@@ -17,7 +17,7 @@ codefind find "login" .
 ผู้ใช้สามารถกำหนด extension ที่ต้องการค้นหาได้
 
 ```bash
-codefind find "login" . --ext py,ts,tsx
+codefind "login" . --ext py,ts,tsx
 ```
 
 ## FR-005 Context Output
@@ -33,8 +33,8 @@ codefind find "login" . --ext py,ts,tsx
 ผู้ใช้สามารถเปิดผลลัพธ์ไปยัง editor ได้
 
 ```bash
-codefind find "login" . --open vim
-codefind find "login" . --open code
+codefind "login" . --open vim
+codefind "login" . --open code
 ```
 
 ## FR-009 Case Sensitive Option

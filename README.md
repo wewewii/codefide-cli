@@ -1,6 +1,6 @@
 # CodeFind CLI
 
-CodeFind คือ CLI tool สำหรับค้นหาข้อความใน directory หลายไฟล์ แล้วแสดงผลแบบอ่านง่าย พร้อม file path, line number และ context รอบบรรทัดที่เจอ เพื่อเปิดแก้ต่อใน Vim, VS Code หรือ Antigravity ได้เร็วขึ้น
+CodeFind คือ CLI tool สำหรับค้นหาข้อความใน directory หลายไฟล์ แล้วแสดงผลแบบอ่านง่าย พร้อม file path, line number และ context รอบบรรทัดที่เจอ
 
 > Status: Software Design Package + Project Skeleton
 
@@ -8,16 +8,14 @@ CodeFind คือ CLI tool สำหรับค้นหาข้อควา�
 
 ```bash
 codefind "login" .
-codefind "JWT_SECRET" ./backend --ext py,ts,tsx
-codefind "auth" . --context 3
-codefind "password" . --open vim
-codefind "login" . --open code
+codefind "JWT_SECRET" ./backend
+codefind "invalid token" .
 ```
 
 ## Install for Development
 
 ```bash
-python -m venv .venv
+python3.11 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
 codefind --help

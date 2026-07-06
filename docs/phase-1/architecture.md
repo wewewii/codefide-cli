@@ -3,11 +3,11 @@
 ## Module Overview
 
 ```txt
-main.py       CLI layer: parse args, validate input, call scanner, call formatter/opener
-scanner.py    Search core: walk files, filter, read, match, build result
+main.py       CLI layer: parse args, validate input, call scanner, call formatter
+scanner.py    Search core: walk files, read, match, build result
 formatter.py  Terminal output: rich display, highlight, summary
-opener.py     Editor integration: vim/code/antigravity commands
-tests/        Unit tests for scanner and opener
+opener.py     Reserved for Phase 3 editor integration
+tests/        Unit tests for scanner
 ```
 
 ## Data Flow
@@ -22,8 +22,6 @@ search_directory()
 list[SearchResult]
   ↓
 print_results()
-  ↓
-optional open_selected_result()
 ```
 
 ## Core Data Structures
@@ -32,11 +30,7 @@ optional open_selected_result()
 SearchOptions(
     keyword: str,
     root: Path,
-    extensions: set[str] | None,
     context: int,
-    ignore_dirs: set[str],
-    case_sensitive: bool,
-    regex: bool,
 )
 ```
 

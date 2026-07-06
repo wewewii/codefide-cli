@@ -10,16 +10,14 @@ from codefind.scanner import SearchResult
 console = Console()
 
 
-def _highlight(line: str, keyword: str, regex: bool, case_sensitive: bool) -> Text:
+def _highlight(line: str, keyword: str) -> Text:
     text = Text(line)
-    flags = 0 if case_sensitive else re.IGNORECASE
-    pattern = keyword if regex else re.escape(keyword)
-    for match in re.finditer(pattern, line, flags):
+    for match in re.finditer(re.escape(keyword), line, re.IGNORECASE):
         text.stylize("bold reverse", match.start(), match.end())
     return text
 
 
-def print_results(results: list[SearchResult], keyword: str, regex: bool = False, case_sensitive: bool = False) -> None:
+def print_results(results: list[SearchResult], keyword: str) -> None:
     if not results:
         console.print("[yellow]No matches found.[/yellow]")
         return
@@ -30,7 +28,7 @@ def print_results(results: list[SearchResult], keyword: str, regex: bool = False
             marker = ">" if number == result.line_number else " "
             prefix = f"{marker} {number:>4} | "
             console.print(prefix, end="")
-            console.print(_highlight(line, keyword, regex, case_sensitive))
+            console.print(_highlight(line, keyword))
 
     files = Counter(str(r.file_path) for r in results)
     console.print(f"\n[bold green]Found {len(results)} matches in {len(files)} files.[/bold green]")
