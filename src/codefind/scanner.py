@@ -20,6 +20,7 @@ DEFAULT_IGNORE_DIRS = {
 class SearchOptions:
     keyword: str
     root: Path
+    extensions: set[str] | None = None
     context: int = 3
 
 
@@ -43,6 +44,12 @@ def iter_files(root: Path, ignore_dirs: set[str]) -> Iterable[Path]:
             yield current_path / filename
 
 
+def matches_extension(path: Path, extensions: set[str] | None) -> bool:
+    if extensions is None:
+        return True
+    return path.suffix.lstrip(".").lower() in extensions
+
+
 def read_lines_safely(path: Path) -> list[str] | None:
     try:
         return path.read_text(encoding="utf-8").splitlines()
@@ -54,6 +61,8 @@ def search_directory(options: SearchOptions) -> Iterable[SearchResult]:
     keyword = options.keyword.casefold()
 
     for file_path in iter_files(options.root, DEFAULT_IGNORE_DIRS):
+        if not matches_extension(file_path, options.extensions):
+            continue
         lines = read_lines_safely(file_path)
         if lines is None:
             continue

@@ -12,7 +12,7 @@
 
 ## Phase 2 - Robust Search
 
-- [ ] CF-101 Add `--ext`
+- [x] CF-101 Add `--ext`
 - [ ] CF-102 Add `--ignore`
 - [ ] CF-103 Add `--context`
 - [ ] CF-104 Improve Binary Detection

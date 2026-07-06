@@ -8,12 +8,14 @@
 - Context at beginning of file
 - Context at end of file
 - Ignore directory
+- Extension filter
 - Binary/unreadable file skip
 
 ## Manual Tests
 
 ```bash
 codefind "login" .
+codefind "login" . --ext py,ts
 codefind "JWT_SECRET" ./src
 codefind "invalid token" .
 ```

@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Optional
 
 import typer
 
@@ -8,7 +9,14 @@ from codefind.formatter import print_results
 app = typer.Typer(help="Find text in a directory and show code context.", no_args_is_help=True)
 
 
-def _run_search(keyword: str, path: Path) -> None:
+def parse_extensions(ext: Optional[str]) -> set[str] | None:
+    if ext is None:
+        return None
+    extensions = {item.strip().lstrip(".").lower() for item in ext.split(",") if item.strip()}
+    return extensions or None
+
+
+def _run_search(keyword: str, path: Path, ext: Optional[str]) -> None:
     if not keyword:
         raise typer.BadParameter("keyword must not be empty")
     if not path.exists():
@@ -16,7 +24,7 @@ def _run_search(keyword: str, path: Path) -> None:
     if not path.is_dir():
         raise typer.BadParameter(f"path must be a directory: {path}")
 
-    options = SearchOptions(keyword=keyword, root=path)
+    options = SearchOptions(keyword=keyword, root=path, extensions=parse_extensions(ext))
     results = list(search_directory(options))
     print_results(results, keyword=keyword)
 
@@ -25,6 +33,7 @@ def _run_search(keyword: str, path: Path) -> None:
 def main(
     keyword: str = typer.Argument(..., help="Keyword or pattern to search."),
     path: Path = typer.Argument(Path("."), help="Directory to search."),
+    ext: Optional[str] = typer.Option(None, "--ext", help="Comma-separated extensions, e.g. py,ts,tsx"),
 ) -> None:
     """Search KEYWORD inside PATH."""
-    _run_search(keyword, path)
+    _run_search(keyword, path, ext)

@@ -91,3 +91,32 @@ def test_binary_file_is_skipped(tmp_path: Path):
     results = list(search_directory(SearchOptions(keyword="login", root=tmp_path)))
 
     assert results == []
+
+
+def test_extension_filter_searches_matching_extensions(tmp_path: Path):
+    py_file = tmp_path / "app.py"
+    md_file = tmp_path / "README.md"
+    py_file.write_text("login()\n", encoding="utf-8")
+    md_file.write_text("login\n", encoding="utf-8")
+
+    results = list(
+        search_directory(SearchOptions(keyword="login", root=tmp_path, extensions={"py"}))
+    )
+
+    assert len(results) == 1
+    assert results[0].file_path == py_file
+
+
+def test_extension_filter_accepts_multiple_extensions(tmp_path: Path):
+    py_file = tmp_path / "app.py"
+    ts_file = tmp_path / "auth.ts"
+    md_file = tmp_path / "README.md"
+    py_file.write_text("login()\n", encoding="utf-8")
+    ts_file.write_text("login()\n", encoding="utf-8")
+    md_file.write_text("login\n", encoding="utf-8")
+
+    results = list(
+        search_directory(SearchOptions(keyword="login", root=tmp_path, extensions={"py", "ts"}))
+    )
+
+    assert {result.file_path for result in results} == {py_file, ts_file}
