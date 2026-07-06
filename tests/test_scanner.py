@@ -63,6 +63,26 @@ def test_context_at_end_of_file(tmp_path: Path):
     assert results[0].context_lines == [(1, "a"), (2, "b"), (3, "c"), (4, "login()")]
 
 
+def test_custom_context_lines(tmp_path: Path):
+    file = tmp_path / "app.py"
+    file.write_text("a\nb\nlogin()\nd\ne\n", encoding="utf-8")
+
+    results = list(search_directory(SearchOptions(keyword="login", root=tmp_path, context=1)))
+
+    assert len(results) == 1
+    assert results[0].context_lines == [(2, "b"), (3, "login()"), (4, "d")]
+
+
+def test_zero_context_only_returns_matched_line(tmp_path: Path):
+    file = tmp_path / "app.py"
+    file.write_text("a\nlogin()\nc\n", encoding="utf-8")
+
+    results = list(search_directory(SearchOptions(keyword="login", root=tmp_path, context=0)))
+
+    assert len(results) == 1
+    assert results[0].context_lines == [(2, "login()")]
+
+
 def test_ignore_node_modules(tmp_path: Path):
     node = tmp_path / "node_modules"
     node.mkdir()
