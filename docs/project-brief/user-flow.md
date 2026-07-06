@@ -3,7 +3,7 @@
 ## Basic Search Flow
 
 1. User เปิด terminal ที่ root project
-2. User รัน `codefind find "keyword" .`
+2. User รัน `codefind "keyword" .`
 3. CLI validate keyword และ path
 4. Scanner เดินไฟล์แบบ recursive
 5. Scanner ข้าม ignored directories
@@ -13,7 +13,7 @@
 
 ## Open Editor Flow
 
-1. User รัน `codefind find "keyword" . --open vim`
+1. User รัน `codefind "keyword" . --open vim`
 2. CLI แสดงผลลัพธ์ทั้งหมด
 3. ถ้ามี match เดียว เปิดไฟล์ทันที
 4. ถ้ามีหลาย match ให้ user เลือกหมายเลข

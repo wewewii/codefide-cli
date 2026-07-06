@@ -2,13 +2,13 @@
 
 ## Phase 1 - MVP CLI
 
-- [ ] CF-001 Initialize Project
-- [ ] CF-002 Implement CLI Arguments
-- [ ] CF-003 Implement File Traversal
-- [ ] CF-004 Implement Keyword Search
-- [ ] CF-005 Implement Context Lines
-- [ ] CF-006 Implement Terminal Output
-- [ ] CF-007 Add Basic Tests
+- [x] CF-001 Initialize Project
+- [x] CF-002 Implement CLI Arguments
+- [x] CF-003 Implement File Traversal
+- [x] CF-004 Implement Keyword Search
+- [x] CF-005 Implement Context Lines
+- [x] CF-006 Implement Terminal Output
+- [x] CF-007 Add Basic Tests
 
 ## Phase 2 - Robust Search
 

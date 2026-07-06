@@ -4,33 +4,33 @@
 Developer ต้องการหา function `login` ว่าถูกเรียกจากไฟล์ไหนบ้าง
 
 ```bash
-codefind find "login" .
+codefind "login" .
 ```
 
 ## UC-002 Find Environment Variable
 Developer ต้องการหาว่า `JWT_SECRET` ถูกใช้ที่ไหน
 
 ```bash
-codefind find "JWT_SECRET" ./backend
+codefind "JWT_SECRET" ./backend
 ```
 
 ## UC-003 Search Only TypeScript Files
 Developer ต้องการค้นหาเฉพาะ frontend
 
 ```bash
-codefind find "useAuth" ./frontend --ext ts,tsx
+codefind "useAuth" ./frontend --ext ts,tsx
 ```
 
 ## UC-004 Search and Open in Vim
 Developer ต้องการค้นหาแล้วเปิดไปแก้ทันที
 
 ```bash
-codefind find "TODO" . --open vim
+codefind "TODO" . --open vim
 ```
 
 ## UC-005 Search Error Message
 Developer เห็น error จาก logs แล้วต้องการหา source code ที่สร้าง error นั้น
 
 ```bash
-codefind find "invalid token" .
+codefind "invalid token" .
 ```
