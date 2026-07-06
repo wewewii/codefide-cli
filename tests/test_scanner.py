@@ -73,6 +73,41 @@ def test_ignore_node_modules(tmp_path: Path):
     assert results == []
 
 
+def test_custom_ignore_directory_is_skipped(tmp_path: Path):
+    vendor = tmp_path / "vendor"
+    src = tmp_path / "src"
+    vendor.mkdir()
+    src.mkdir()
+    (vendor / "auth.py").write_text("login\n", encoding="utf-8")
+    (src / "auth.py").write_text("login\n", encoding="utf-8")
+
+    results = list(
+        search_directory(SearchOptions(keyword="login", root=tmp_path, ignore_dirs={"vendor"}))
+    )
+
+    assert len(results) == 1
+    assert results[0].file_path == src / "auth.py"
+
+
+def test_custom_ignore_combines_with_default_ignore(tmp_path: Path):
+    node = tmp_path / "node_modules"
+    vendor = tmp_path / "vendor"
+    app = tmp_path / "app"
+    node.mkdir()
+    vendor.mkdir()
+    app.mkdir()
+    (node / "auth.js").write_text("login\n", encoding="utf-8")
+    (vendor / "auth.py").write_text("login\n", encoding="utf-8")
+    (app / "auth.py").write_text("login\n", encoding="utf-8")
+
+    results = list(
+        search_directory(SearchOptions(keyword="login", root=tmp_path, ignore_dirs={"vendor"}))
+    )
+
+    assert len(results) == 1
+    assert results[0].file_path == app / "auth.py"
+
+
 def test_iter_files_recurses_into_subdirectories(tmp_path: Path):
     nested = tmp_path / "src" / "codefind"
     nested.mkdir(parents=True)

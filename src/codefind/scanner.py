@@ -21,6 +21,7 @@ class SearchOptions:
     keyword: str
     root: Path
     extensions: set[str] | None = None
+    ignore_dirs: set[str] | None = None
     context: int = 3
 
 
@@ -59,8 +60,9 @@ def read_lines_safely(path: Path) -> list[str] | None:
 
 def search_directory(options: SearchOptions) -> Iterable[SearchResult]:
     keyword = options.keyword.casefold()
+    ignore_dirs = DEFAULT_IGNORE_DIRS | (options.ignore_dirs or set())
 
-    for file_path in iter_files(options.root, DEFAULT_IGNORE_DIRS):
+    for file_path in iter_files(options.root, ignore_dirs):
         if not matches_extension(file_path, options.extensions):
             continue
         lines = read_lines_safely(file_path)

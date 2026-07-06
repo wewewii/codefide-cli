@@ -8,6 +8,7 @@
 - Context at beginning of file
 - Context at end of file
 - Ignore directory
+- Custom ignore directory
 - Extension filter
 - Binary/unreadable file skip
 
@@ -16,6 +17,7 @@
 ```bash
 codefind "login" .
 codefind "login" . --ext py,ts
+codefind "login" . --ignore vendor,tmp
 codefind "JWT_SECRET" ./src
 codefind "invalid token" .
 ```

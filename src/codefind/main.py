@@ -16,7 +16,13 @@ def parse_extensions(ext: Optional[str]) -> set[str] | None:
     return extensions or None
 
 
-def _run_search(keyword: str, path: Path, ext: Optional[str]) -> None:
+def parse_ignore_dirs(ignore: Optional[str]) -> set[str]:
+    if ignore is None:
+        return set()
+    return {item.strip() for item in ignore.split(",") if item.strip()}
+
+
+def _run_search(keyword: str, path: Path, ext: Optional[str], ignore: Optional[str]) -> None:
     if not keyword:
         raise typer.BadParameter("keyword must not be empty")
     if not path.exists():
@@ -24,7 +30,12 @@ def _run_search(keyword: str, path: Path, ext: Optional[str]) -> None:
     if not path.is_dir():
         raise typer.BadParameter(f"path must be a directory: {path}")
 
-    options = SearchOptions(keyword=keyword, root=path, extensions=parse_extensions(ext))
+    options = SearchOptions(
+        keyword=keyword,
+        root=path,
+        extensions=parse_extensions(ext),
+        ignore_dirs=parse_ignore_dirs(ignore),
+    )
     results = list(search_directory(options))
     print_results(results, keyword=keyword)
 
@@ -34,6 +45,7 @@ def main(
     keyword: str = typer.Argument(..., help="Keyword or pattern to search."),
     path: Path = typer.Argument(Path("."), help="Directory to search."),
     ext: Optional[str] = typer.Option(None, "--ext", help="Comma-separated extensions, e.g. py,ts,tsx"),
+    ignore: Optional[str] = typer.Option(None, "--ignore", help="Comma-separated folders to ignore."),
 ) -> None:
     """Search KEYWORD inside PATH."""
-    _run_search(keyword, path, ext)
+    _run_search(keyword, path, ext, ignore)
