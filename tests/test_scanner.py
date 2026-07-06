@@ -63,6 +63,26 @@ def test_context_at_end_of_file(tmp_path: Path):
     assert results[0].context_lines == [(1, "a"), (2, "b"), (3, "c"), (4, "login()")]
 
 
+def test_custom_context_lines(tmp_path: Path):
+    file = tmp_path / "app.py"
+    file.write_text("a\nb\nlogin()\nd\ne\n", encoding="utf-8")
+
+    results = list(search_directory(SearchOptions(keyword="login", root=tmp_path, context=1)))
+
+    assert len(results) == 1
+    assert results[0].context_lines == [(2, "b"), (3, "login()"), (4, "d")]
+
+
+def test_zero_context_only_returns_matched_line(tmp_path: Path):
+    file = tmp_path / "app.py"
+    file.write_text("a\nlogin()\nc\n", encoding="utf-8")
+
+    results = list(search_directory(SearchOptions(keyword="login", root=tmp_path, context=0)))
+
+    assert len(results) == 1
+    assert results[0].context_lines == [(2, "login()")]
+
+
 def test_ignore_node_modules(tmp_path: Path):
     node = tmp_path / "node_modules"
     node.mkdir()
@@ -71,6 +91,41 @@ def test_ignore_node_modules(tmp_path: Path):
     results = list(search_directory(SearchOptions(keyword="login", root=tmp_path)))
 
     assert results == []
+
+
+def test_custom_ignore_directory_is_skipped(tmp_path: Path):
+    vendor = tmp_path / "vendor"
+    src = tmp_path / "src"
+    vendor.mkdir()
+    src.mkdir()
+    (vendor / "auth.py").write_text("login\n", encoding="utf-8")
+    (src / "auth.py").write_text("login\n", encoding="utf-8")
+
+    results = list(
+        search_directory(SearchOptions(keyword="login", root=tmp_path, ignore_dirs={"vendor"}))
+    )
+
+    assert len(results) == 1
+    assert results[0].file_path == src / "auth.py"
+
+
+def test_custom_ignore_combines_with_default_ignore(tmp_path: Path):
+    node = tmp_path / "node_modules"
+    vendor = tmp_path / "vendor"
+    app = tmp_path / "app"
+    node.mkdir()
+    vendor.mkdir()
+    app.mkdir()
+    (node / "auth.js").write_text("login\n", encoding="utf-8")
+    (vendor / "auth.py").write_text("login\n", encoding="utf-8")
+    (app / "auth.py").write_text("login\n", encoding="utf-8")
+
+    results = list(
+        search_directory(SearchOptions(keyword="login", root=tmp_path, ignore_dirs={"vendor"}))
+    )
+
+    assert len(results) == 1
+    assert results[0].file_path == app / "auth.py"
 
 
 def test_iter_files_recurses_into_subdirectories(tmp_path: Path):
@@ -91,3 +146,32 @@ def test_binary_file_is_skipped(tmp_path: Path):
     results = list(search_directory(SearchOptions(keyword="login", root=tmp_path)))
 
     assert results == []
+
+
+def test_extension_filter_searches_matching_extensions(tmp_path: Path):
+    py_file = tmp_path / "app.py"
+    md_file = tmp_path / "README.md"
+    py_file.write_text("login()\n", encoding="utf-8")
+    md_file.write_text("login\n", encoding="utf-8")
+
+    results = list(
+        search_directory(SearchOptions(keyword="login", root=tmp_path, extensions={"py"}))
+    )
+
+    assert len(results) == 1
+    assert results[0].file_path == py_file
+
+
+def test_extension_filter_accepts_multiple_extensions(tmp_path: Path):
+    py_file = tmp_path / "app.py"
+    ts_file = tmp_path / "auth.ts"
+    md_file = tmp_path / "README.md"
+    py_file.write_text("login()\n", encoding="utf-8")
+    ts_file.write_text("login()\n", encoding="utf-8")
+    md_file.write_text("login\n", encoding="utf-8")
+
+    results = list(
+        search_directory(SearchOptions(keyword="login", root=tmp_path, extensions={"py", "ts"}))
+    )
+
+    assert {result.file_path for result in results} == {py_file, ts_file}
