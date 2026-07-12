@@ -24,6 +24,7 @@ class SearchOptions:
     extensions: set[str] | None = None
     ignore_dirs: set[str] | None = None
     context: int = 3
+    max_file_size: int | None = None
 
 
 @dataclass(frozen=True)
@@ -61,6 +62,15 @@ def is_binary_file(path: Path) -> bool:
     return b"\0" in chunk
 
 
+def is_too_large(path: Path, max_file_size: int | None) -> bool:
+    if max_file_size is None:
+        return False
+    try:
+        return path.stat().st_size > max_file_size
+    except OSError:
+        return False
+
+
 def read_lines_safely(path: Path) -> list[str] | None:
     try:
         return path.read_text(encoding="utf-8").splitlines()
@@ -74,6 +84,8 @@ def search_directory(options: SearchOptions) -> Iterable[SearchResult]:
 
     for file_path in iter_files(options.root, ignore_dirs):
         if not matches_extension(file_path, options.extensions):
+            continue
+        if is_too_large(file_path, options.max_file_size):
             continue
         if is_binary_file(file_path):
             continue

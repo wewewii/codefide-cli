@@ -28,6 +28,7 @@ def _run_search(
     ext: Optional[str],
     ignore: Optional[str],
     context: int,
+    max_file_size: Optional[int],
 ) -> None:
     if not keyword:
         raise typer.BadParameter("keyword must not be empty")
@@ -42,6 +43,7 @@ def _run_search(
         extensions=parse_extensions(ext),
         ignore_dirs=parse_ignore_dirs(ignore),
         context=context,
+        max_file_size=max_file_size,
     )
     results = list(search_directory(options))
     print_results(results, keyword=keyword)
@@ -54,6 +56,12 @@ def main(
     ext: Optional[str] = typer.Option(None, "--ext", help="Comma-separated extensions, e.g. py,ts,tsx"),
     ignore: Optional[str] = typer.Option(None, "--ignore", help="Comma-separated folders to ignore."),
     context: int = typer.Option(3, "--context", "-C", min=0, help="Context lines before/after."),
+    max_file_size: Optional[int] = typer.Option(
+        None,
+        "--max-file-size",
+        min=1,
+        help="Skip files larger than this size in bytes.",
+    ),
 ) -> None:
     """Search KEYWORD inside PATH."""
-    _run_search(keyword, path, ext, ignore, context)
+    _run_search(keyword, path, ext, ignore, context, max_file_size)

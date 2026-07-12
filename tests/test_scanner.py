@@ -1,6 +1,12 @@
 from pathlib import Path
 
-from codefind.scanner import SearchOptions, is_binary_file, iter_files, search_directory
+from codefind.scanner import (
+    SearchOptions,
+    is_binary_file,
+    is_too_large,
+    iter_files,
+    search_directory,
+)
 
 
 def test_search_keyword_with_default_context(tmp_path: Path):
@@ -160,6 +166,38 @@ def test_binary_detection_allows_text_files(tmp_path: Path):
     file.write_text("login()\n", encoding="utf-8")
 
     assert is_binary_file(file) is False
+
+
+def test_large_file_is_skipped(tmp_path: Path):
+    file = tmp_path / "large.py"
+    file.write_text("login\n", encoding="utf-8")
+
+    results = list(
+        search_directory(SearchOptions(keyword="login", root=tmp_path, max_file_size=1))
+    )
+
+    assert results == []
+
+
+def test_file_within_max_file_size_is_searched(tmp_path: Path):
+    file = tmp_path / "small.py"
+    file.write_text("login\n", encoding="utf-8")
+
+    results = list(
+        search_directory(SearchOptions(keyword="login", root=tmp_path, max_file_size=100))
+    )
+
+    assert len(results) == 1
+    assert results[0].file_path == file
+
+
+def test_is_too_large_uses_byte_size(tmp_path: Path):
+    file = tmp_path / "app.py"
+    file.write_text("login\n", encoding="utf-8")
+
+    assert is_too_large(file, max_file_size=1) is True
+    assert is_too_large(file, max_file_size=100) is False
+    assert is_too_large(file, max_file_size=None) is False
 
 
 def test_extension_filter_searches_matching_extensions(tmp_path: Path):

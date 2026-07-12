@@ -12,6 +12,7 @@
 - Custom ignore directory
 - Extension filter
 - Binary/unreadable file skip
+- Max file size skip
 
 ## Manual Tests
 
@@ -20,6 +21,7 @@ codefind "login" .
 codefind "login" . --ext py,ts
 codefind "login" . --ignore vendor,tmp
 codefind "login" . --context 1
+codefind "login" . --max-file-size 1048576
 codefind "JWT_SECRET" ./src
 codefind "invalid token" .
 ```
