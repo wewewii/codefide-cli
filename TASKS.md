@@ -18,7 +18,7 @@
 - [x] CF-104 Improve Binary Detection
 - [x] CF-105 Add Max File Size
 - [x] CF-106 Improve Error Handling
-- [ ] CF-107 Add More Tests
+- [x] CF-107 Add More Tests
 
 ## Phase 3 - Editor and Advanced Search
 

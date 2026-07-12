@@ -15,6 +15,13 @@
 - Max file size skip
 - Skipped file warning summary
 
+## CLI Integration Tests
+
+- `--ext` filters output
+- `--ignore` skips custom directories
+- `--context 0` hides surrounding lines
+- `--max-file-size` prints skipped summary
+
 ## Manual Tests
 
 ```bash

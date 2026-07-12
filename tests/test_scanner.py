@@ -248,3 +248,15 @@ def test_extension_filter_accepts_multiple_extensions(tmp_path: Path):
     )
 
     assert {result.file_path for result in results} == {py_file, ts_file}
+
+
+def test_extension_filter_matches_uppercase_file_suffix(tmp_path: Path):
+    file = tmp_path / "APP.PY"
+    file.write_text("login()\n", encoding="utf-8")
+
+    results = list(
+        search_directory(SearchOptions(keyword="login", root=tmp_path, extensions={"py"}))
+    )
+
+    assert len(results) == 1
+    assert results[0].file_path == file
