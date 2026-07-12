@@ -13,6 +13,7 @@
 - Extension filter
 - Binary/unreadable file skip
 - Max file size skip
+- Skipped file warning summary
 
 ## Manual Tests
 

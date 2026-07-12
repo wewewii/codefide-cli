@@ -17,7 +17,7 @@
 - [x] CF-103 Add `--context`
 - [x] CF-104 Improve Binary Detection
 - [x] CF-105 Add Max File Size
-- [ ] CF-106 Improve Error Handling
+- [x] CF-106 Improve Error Handling
 - [ ] CF-107 Add More Tests
 
 ## Phase 3 - Editor and Advanced Search

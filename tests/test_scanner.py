@@ -5,6 +5,7 @@ from codefind.scanner import (
     is_binary_file,
     is_too_large,
     iter_files,
+    scan_directory,
     search_directory,
 )
 
@@ -198,6 +199,26 @@ def test_is_too_large_uses_byte_size(tmp_path: Path):
     assert is_too_large(file, max_file_size=1) is True
     assert is_too_large(file, max_file_size=100) is False
     assert is_too_large(file, max_file_size=None) is False
+
+
+def test_scan_report_counts_skipped_files(tmp_path: Path):
+    binary_file = tmp_path / "binary.bin"
+    large_file = tmp_path / "large.py"
+    unreadable_file = tmp_path / "broken.txt"
+    match_file = tmp_path / "app.py"
+    binary_file.write_bytes(b"abc\0login")
+    large_file.write_text("login\n" * 5, encoding="utf-8")
+    unreadable_file.write_bytes(b"\xff\xfe login")
+    match_file.write_text("login", encoding="utf-8")
+
+    report = scan_directory(SearchOptions(keyword="login", root=tmp_path, max_file_size=10))
+
+    assert len(report.results) == 1
+    assert report.results[0].file_path == match_file
+    assert report.summary.skipped_binary == 1
+    assert report.summary.skipped_large == 1
+    assert report.summary.skipped_unreadable == 1
+    assert report.summary.skipped_total == 3
 
 
 def test_extension_filter_searches_matching_extensions(tmp_path: Path):

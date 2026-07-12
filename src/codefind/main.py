@@ -3,7 +3,7 @@ from typing import Optional
 
 import typer
 
-from codefind.scanner import SearchOptions, search_directory
+from codefind.scanner import SearchOptions, scan_directory
 from codefind.formatter import print_results
 
 app = typer.Typer(help="Find text in a directory and show code context.", no_args_is_help=True)
@@ -45,8 +45,8 @@ def _run_search(
         context=context,
         max_file_size=max_file_size,
     )
-    results = list(search_directory(options))
-    print_results(results, keyword=keyword)
+    report = scan_directory(options)
+    print_results(report.results, keyword=keyword, summary=report.summary)
 
 
 @app.command()
