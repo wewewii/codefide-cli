@@ -15,7 +15,7 @@
 - [x] CF-101 Add `--ext`
 - [x] CF-102 Add `--ignore`
 - [x] CF-103 Add `--context`
-- [ ] CF-104 Improve Binary Detection
+- [x] CF-104 Improve Binary Detection
 - [ ] CF-105 Add Max File Size
 - [ ] CF-106 Improve Error Handling
 - [ ] CF-107 Add More Tests

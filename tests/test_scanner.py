@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from codefind.scanner import SearchOptions, iter_files, search_directory
+from codefind.scanner import SearchOptions, is_binary_file, iter_files, search_directory
 
 
 def test_search_keyword_with_default_context(tmp_path: Path):
@@ -146,6 +146,20 @@ def test_binary_file_is_skipped(tmp_path: Path):
     results = list(search_directory(SearchOptions(keyword="login", root=tmp_path)))
 
     assert results == []
+
+
+def test_binary_detection_finds_null_bytes(tmp_path: Path):
+    file = tmp_path / "image.bin"
+    file.write_bytes(b"abc\0def")
+
+    assert is_binary_file(file) is True
+
+
+def test_binary_detection_allows_text_files(tmp_path: Path):
+    file = tmp_path / "app.py"
+    file.write_text("login()\n", encoding="utf-8")
+
+    assert is_binary_file(file) is False
 
 
 def test_extension_filter_searches_matching_extensions(tmp_path: Path):
