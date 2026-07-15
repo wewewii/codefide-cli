@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+import json
 import re
 from collections import Counter
 from rich.console import Console
 from rich.text import Text
 
-from codefind.scanner import SearchResult, SearchSummary
+from codefind.scanner import SearchReport, SearchResult, SearchSummary
 
 console = Console()
 
@@ -61,3 +62,33 @@ def print_results(
     files = Counter(str(r.file_path) for r in results)
     console.print(f"\n[bold green]Found {len(results)} matches in {len(files)} files.[/bold green]")
     _print_skipped_summary(summary)
+
+
+def format_json_report(report: SearchReport) -> str:
+    payload = {
+        "results": [
+            {
+                "file_path": str(result.file_path),
+                "line_number": result.line_number,
+                "matched_line": result.matched_line,
+                "context_lines": [
+                    {"line_number": number, "text": line}
+                    for number, line in result.context_lines
+                ],
+            }
+            for result in report.results
+        ],
+        "summary": {
+            "matches": len(report.results),
+            "files": len({str(result.file_path) for result in report.results}),
+            "skipped_total": report.summary.skipped_total,
+            "skipped_binary": report.summary.skipped_binary,
+            "skipped_large": report.summary.skipped_large,
+            "skipped_unreadable": report.summary.skipped_unreadable,
+        },
+    }
+    return json.dumps(payload, ensure_ascii=False)
+
+
+def print_json_report(report: SearchReport) -> None:
+    print(format_json_report(report))

@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 
 from typer.testing import CliRunner
 
@@ -169,3 +170,40 @@ def test_cli_invalid_regex_shows_clear_error(tmp_path: Path):
 
     assert result.exit_code != 0
     assert "invalid regex:" in result.output
+
+
+def test_cli_json_outputs_parseable_results(tmp_path: Path):
+    file = tmp_path / "app.py"
+    file.write_text("before\nlogin()\nafter\n", encoding="utf-8")
+
+    result = runner.invoke(app, ["login", str(tmp_path), "--context", "1", "--json"])
+
+    assert result.exit_code == 0
+    payload = json.loads(result.output)
+    assert payload["results"] == [
+        {
+            "file_path": str(file),
+            "line_number": 2,
+            "matched_line": "login()",
+            "context_lines": [
+                {"line_number": 1, "text": "before"},
+                {"line_number": 2, "text": "login()"},
+                {"line_number": 3, "text": "after"},
+            ],
+        }
+    ]
+    assert payload["summary"]["matches"] == 1
+    assert payload["summary"]["files"] == 1
+
+
+def test_cli_json_outputs_skipped_summary(tmp_path: Path):
+    file = tmp_path / "large.py"
+    file.write_text("login\n", encoding="utf-8")
+
+    result = runner.invoke(app, ["login", str(tmp_path), "--max-file-size", "1", "--json"])
+
+    assert result.exit_code == 0
+    payload = json.loads(result.output)
+    assert payload["results"] == []
+    assert payload["summary"]["skipped_total"] == 1
+    assert payload["summary"]["skipped_large"] == 1

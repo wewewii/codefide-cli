@@ -28,7 +28,7 @@
 - [x] CF-204 Result Selection Prompt
 - [x] CF-205 Add `--case-sensitive`
 - [x] CF-206 Add `--regex`
-- [ ] CF-207 Add `--json`
+- [x] CF-207 Add `--json`
 
 ## Phase 4 - Polish and Release
 

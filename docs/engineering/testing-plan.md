@@ -27,6 +27,7 @@
 - multiple `--open` matches prompt for selection
 - `--case-sensitive` requires exact case
 - `--regex` matches regular expressions and reports invalid patterns
+- `--json` outputs parseable results and summary
 
 ## Manual Tests
 
@@ -41,6 +42,7 @@ codefind "login" . --open code
 codefind "login" . --open antigravity
 codefind "login" . --case-sensitive
 codefind "login|logout" . --regex
+codefind "login" . --json
 codefind "JWT_SECRET" ./src
 codefind "invalid token" .
 ```
