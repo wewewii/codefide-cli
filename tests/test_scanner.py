@@ -68,6 +68,36 @@ def test_case_sensitive_search_matches_exact_case(tmp_path: Path):
     assert results[0].file_path == file
 
 
+def test_regex_search_matches_pattern(tmp_path: Path):
+    file = tmp_path / "auth.py"
+    file.write_text("login()\nlogout()\n", encoding="utf-8")
+
+    results = list(
+        search_directory(SearchOptions(keyword="log(in|out)", root=tmp_path, regex=True))
+    )
+
+    assert [result.line_number for result in results] == [1, 2]
+
+
+def test_regex_search_respects_case_sensitive(tmp_path: Path):
+    file = tmp_path / "auth.py"
+    file.write_text("LOGIN()\nlogin()\n", encoding="utf-8")
+
+    results = list(
+        search_directory(
+            SearchOptions(
+                keyword="login",
+                root=tmp_path,
+                case_sensitive=True,
+                regex=True,
+            )
+        )
+    )
+
+    assert len(results) == 1
+    assert results[0].line_number == 2
+
+
 def test_no_match_returns_empty_list(tmp_path: Path):
     file = tmp_path / "app.py"
     file.write_text("logout()\n", encoding="utf-8")

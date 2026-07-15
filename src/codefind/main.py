@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 from typing import Optional
 
 import typer
@@ -32,6 +33,7 @@ def _run_search(
     max_file_size: Optional[int],
     open_editor: Optional[str],
     case_sensitive: bool,
+    regex: bool,
 ) -> None:
     if not keyword:
         raise typer.BadParameter("keyword must not be empty")
@@ -48,13 +50,18 @@ def _run_search(
         context=context,
         max_file_size=max_file_size,
         case_sensitive=case_sensitive,
+        regex=regex,
     )
-    report = scan_directory(options)
+    try:
+        report = scan_directory(options)
+    except re.error as error:
+        raise typer.BadParameter(f"invalid regex: {error}") from error
     print_results(
         report.results,
         keyword=keyword,
         summary=report.summary,
         case_sensitive=case_sensitive,
+        regex=regex,
     )
     if open_editor is not None and report.results:
         open_selected_result(report.results, open_editor)
@@ -77,6 +84,7 @@ def main(
         None, "--open", help="Open first result in vim, code, or antigravity."
     ),
     case_sensitive: bool = typer.Option(False, "--case-sensitive", help="Match case exactly."),
+    regex: bool = typer.Option(False, "--regex", help="Treat keyword as regular expression."),
 ) -> None:
     """Search KEYWORD inside PATH."""
     if open_editor is not None and open_editor not in {"vim", "code", "antigravity"}:
@@ -90,4 +98,5 @@ def main(
         max_file_size,
         open_editor,
         case_sensitive,
+        regex,
     )

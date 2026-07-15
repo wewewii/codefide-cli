@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import os
 from pathlib import Path
+import re
 from typing import Iterable
 
 DEFAULT_IGNORE_DIRS = {
@@ -26,6 +27,7 @@ class SearchOptions:
     context: int = 3
     max_file_size: int | None = None
     case_sensitive: bool = False
+    regex: bool = False
 
 
 @dataclass(frozen=True)
@@ -96,8 +98,14 @@ def read_lines_safely(path: Path) -> list[str] | None:
         return None
 
 
+def build_search_pattern(options: SearchOptions) -> re.Pattern[str]:
+    pattern = options.keyword if options.regex else re.escape(options.keyword)
+    flags = 0 if options.case_sensitive else re.IGNORECASE
+    return re.compile(pattern, flags)
+
+
 def scan_directory(options: SearchOptions) -> SearchReport:
-    keyword = options.keyword if options.case_sensitive else options.keyword.casefold()
+    pattern = build_search_pattern(options)
     ignore_dirs = DEFAULT_IGNORE_DIRS | (options.ignore_dirs or set())
     results: list[SearchResult] = []
     skipped_binary = 0
@@ -118,8 +126,7 @@ def scan_directory(options: SearchOptions) -> SearchReport:
             skipped_unreadable += 1
             continue
         for idx, line in enumerate(lines, start=1):
-            line_to_search = line if options.case_sensitive else line.casefold()
-            if keyword in line_to_search:
+            if pattern.search(line):
                 start = max(1, idx - options.context)
                 end = min(len(lines), idx + options.context)
                 context = [(num, lines[num - 1]) for num in range(start, end + 1)]

@@ -27,3 +27,17 @@ def test_print_results_includes_skipped_summary_with_no_matches(capsys):
     output = capsys.readouterr().out
     assert "No matches found." in output
     assert "Skipped 1 files: 1 binary." in output
+
+
+def test_print_results_highlights_regex(capsys):
+    result = SearchResult(
+        file_path=Path("app.py"),
+        line_number=1,
+        matched_line="login()",
+        context_lines=[(1, "login()")],
+    )
+
+    print_results([result], keyword="log(in|out)", regex=True)
+
+    output = capsys.readouterr().out
+    assert "login()" in output

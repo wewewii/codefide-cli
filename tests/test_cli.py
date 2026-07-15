@@ -148,3 +148,24 @@ def test_cli_case_sensitive_search(tmp_path: Path):
 
     assert result.exit_code == 0
     assert "No matches found." in result.output
+
+
+def test_cli_regex_search(tmp_path: Path):
+    file = tmp_path / "auth.py"
+    file.write_text("login()\nlogout()\n", encoding="utf-8")
+
+    result = runner.invoke(app, ["log(in|out)", str(tmp_path), "--regex"])
+
+    assert result.exit_code == 0
+    assert "auth.py:1" in result.output
+    assert "auth.py:2" in result.output
+
+
+def test_cli_invalid_regex_shows_clear_error(tmp_path: Path):
+    file = tmp_path / "auth.py"
+    file.write_text("login()\n", encoding="utf-8")
+
+    result = runner.invoke(app, ["(", str(tmp_path), "--regex"])
+
+    assert result.exit_code != 0
+    assert "invalid regex:" in result.output
