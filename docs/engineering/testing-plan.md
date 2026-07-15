@@ -23,6 +23,9 @@
 - `--max-file-size` prints skipped summary
 - `--open vim` opens the first result with Vim
 - `--open code` opens the first result with VS Code
+- `--open antigravity` opens the first result with Antigravity
+- multiple `--open` matches prompt for selection
+- `--case-sensitive` requires exact case
 
 ## Manual Tests
 
@@ -34,6 +37,8 @@ codefind "login" . --context 1
 codefind "login" . --max-file-size 1048576
 codefind "login" . --open vim
 codefind "login" . --open code
+codefind "login" . --open antigravity
+codefind "login" . --case-sensitive
 codefind "JWT_SECRET" ./src
 codefind "invalid token" .
 ```

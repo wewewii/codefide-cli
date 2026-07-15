@@ -41,6 +41,33 @@ def test_search_keyword_is_case_insensitive_by_default(tmp_path: Path):
     assert results[0].line_number == 1
 
 
+def test_case_sensitive_search_requires_exact_case(tmp_path: Path):
+    file = tmp_path / "auth.py"
+    file.write_text("def LOGIN():\n    pass\n", encoding="utf-8")
+
+    results = list(
+        search_directory(
+            SearchOptions(keyword="login", root=tmp_path, case_sensitive=True)
+        )
+    )
+
+    assert results == []
+
+
+def test_case_sensitive_search_matches_exact_case(tmp_path: Path):
+    file = tmp_path / "auth.py"
+    file.write_text("def login():\n    pass\n", encoding="utf-8")
+
+    results = list(
+        search_directory(
+            SearchOptions(keyword="login", root=tmp_path, case_sensitive=True)
+        )
+    )
+
+    assert len(results) == 1
+    assert results[0].file_path == file
+
+
 def test_no_match_returns_empty_list(tmp_path: Path):
     file = tmp_path / "app.py"
     file.write_text("logout()\n", encoding="utf-8")

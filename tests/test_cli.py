@@ -59,15 +59,16 @@ def test_cli_reports_skipped_large_files(tmp_path: Path):
     assert "Skipped 1 files: 1 too large." in result.output
 
 
-def test_cli_opens_first_result_with_vim(tmp_path: Path, monkeypatch):
+def test_cli_opens_single_result_with_vim(tmp_path: Path, monkeypatch):
     file = tmp_path / "app.py"
     file.write_text("before\nlogin()\n", encoding="utf-8")
     opened: list[tuple[Path, str]] = []
 
-    def fake_open_result(result, editor: str):
+    def fake_open_selected_result(results, editor: str):
+        result = results[0]
         opened.append((result.file_path, editor))
 
-    monkeypatch.setattr("codefind.main.open_result", fake_open_result)
+    monkeypatch.setattr("codefind.main.open_selected_result", fake_open_selected_result)
 
     result = runner.invoke(app, ["login", str(tmp_path), "--open", "vim"])
 
@@ -75,15 +76,16 @@ def test_cli_opens_first_result_with_vim(tmp_path: Path, monkeypatch):
     assert opened == [(file, "vim")]
 
 
-def test_cli_opens_first_result_with_code(tmp_path: Path, monkeypatch):
+def test_cli_opens_single_result_with_code(tmp_path: Path, monkeypatch):
     file = tmp_path / "app.py"
     file.write_text("before\nlogin()\n", encoding="utf-8")
     opened: list[tuple[Path, str]] = []
 
-    def fake_open_result(result, editor: str):
+    def fake_open_selected_result(results, editor: str):
+        result = results[0]
         opened.append((result.file_path, editor))
 
-    monkeypatch.setattr("codefind.main.open_result", fake_open_result)
+    monkeypatch.setattr("codefind.main.open_selected_result", fake_open_selected_result)
 
     result = runner.invoke(app, ["login", str(tmp_path), "--open", "code"])
 
@@ -91,11 +93,58 @@ def test_cli_opens_first_result_with_code(tmp_path: Path, monkeypatch):
     assert opened == [(file, "code")]
 
 
+def test_cli_opens_single_result_with_antigravity(tmp_path: Path, monkeypatch):
+    file = tmp_path / "app.py"
+    file.write_text("before\nlogin()\n", encoding="utf-8")
+    opened: list[tuple[Path, str]] = []
+
+    def fake_open_selected_result(results, editor: str):
+        result = results[0]
+        opened.append((result.file_path, editor))
+
+    monkeypatch.setattr("codefind.main.open_selected_result", fake_open_selected_result)
+
+    result = runner.invoke(app, ["login", str(tmp_path), "--open", "antigravity"])
+
+    assert result.exit_code == 0
+    assert opened == [(file, "antigravity")]
+
+
 def test_cli_rejects_unsupported_open_editor(tmp_path: Path):
     file = tmp_path / "app.py"
     file.write_text("login()\n", encoding="utf-8")
 
-    result = runner.invoke(app, ["login", str(tmp_path), "--open", "antigravity"])
+    result = runner.invoke(app, ["login", str(tmp_path), "--open", "emacs"])
 
     assert result.exit_code != 0
-    assert "--open currently supports only vim or code" in result.output
+    assert "--open currently supports only vim, code, or antigravity" in result.output
+
+
+def test_cli_open_passes_multiple_results_for_selection(tmp_path: Path, monkeypatch):
+    first = tmp_path / "first.py"
+    second = tmp_path / "second.py"
+    first.write_text("login()\n", encoding="utf-8")
+    second.write_text("login()\n", encoding="utf-8")
+    opened: list[tuple[list[Path], str]] = []
+
+    def fake_open_selected_result(results, editor: str):
+        opened.append(([result.file_path for result in results], editor))
+
+    monkeypatch.setattr("codefind.main.open_selected_result", fake_open_selected_result)
+
+    result = runner.invoke(app, ["login", str(tmp_path), "--open", "vim"])
+
+    assert result.exit_code == 0
+    assert len(opened) == 1
+    assert set(opened[0][0]) == {first, second}
+    assert opened[0][1] == "vim"
+
+
+def test_cli_case_sensitive_search(tmp_path: Path):
+    file = tmp_path / "auth.py"
+    file.write_text("LOGIN()\n", encoding="utf-8")
+
+    result = runner.invoke(app, ["login", str(tmp_path), "--case-sensitive"])
+
+    assert result.exit_code == 0
+    assert "No matches found." in result.output
