@@ -1,18 +1,21 @@
 from __future__ import annotations
 
+import json
 import re
 from collections import Counter
 from rich.console import Console
 from rich.text import Text
 
-from codefind.scanner import SearchResult, SearchSummary
+from codefind.scanner import SearchReport, SearchResult, SearchSummary
 
 console = Console()
 
 
-def _highlight(line: str, keyword: str) -> Text:
+def _highlight(line: str, keyword: str, case_sensitive: bool, regex: bool) -> Text:
     text = Text(line)
-    for match in re.finditer(re.escape(keyword), line, re.IGNORECASE):
+    flags = 0 if case_sensitive else re.IGNORECASE
+    pattern = keyword if regex else re.escape(keyword)
+    for match in re.finditer(pattern, line, flags):
         text.stylize("bold reverse", match.start(), match.end())
     return text
 
@@ -40,6 +43,8 @@ def print_results(
     results: list[SearchResult],
     keyword: str,
     summary: SearchSummary | None = None,
+    case_sensitive: bool = False,
+    regex: bool = False,
 ) -> None:
     if not results:
         console.print("[yellow]No matches found.[/yellow]")
@@ -52,8 +57,38 @@ def print_results(
             marker = ">" if number == result.line_number else " "
             prefix = f"{marker} {number:>4} | "
             console.print(prefix, end="")
-            console.print(_highlight(line, keyword))
+            console.print(_highlight(line, keyword, case_sensitive, regex))
 
     files = Counter(str(r.file_path) for r in results)
     console.print(f"\n[bold green]Found {len(results)} matches in {len(files)} files.[/bold green]")
     _print_skipped_summary(summary)
+
+
+def format_json_report(report: SearchReport) -> str:
+    payload = {
+        "results": [
+            {
+                "file_path": str(result.file_path),
+                "line_number": result.line_number,
+                "matched_line": result.matched_line,
+                "context_lines": [
+                    {"line_number": number, "text": line}
+                    for number, line in result.context_lines
+                ],
+            }
+            for result in report.results
+        ],
+        "summary": {
+            "matches": len(report.results),
+            "files": len({str(result.file_path) for result in report.results}),
+            "skipped_total": report.summary.skipped_total,
+            "skipped_binary": report.summary.skipped_binary,
+            "skipped_large": report.summary.skipped_large,
+            "skipped_unreadable": report.summary.skipped_unreadable,
+        },
+    }
+    return json.dumps(payload, ensure_ascii=False)
+
+
+def print_json_report(report: SearchReport) -> None:
+    print(format_json_report(report))

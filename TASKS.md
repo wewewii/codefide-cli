@@ -22,13 +22,13 @@
 
 ## Phase 3 - Editor and Advanced Search
 
-- [ ] CF-201 Add `--open vim`
-- [ ] CF-202 Add `--open code`
-- [ ] CF-203 Add `--open antigravity`
-- [ ] CF-204 Result Selection Prompt
-- [ ] CF-205 Add `--case-sensitive`
-- [ ] CF-206 Add `--regex`
-- [ ] CF-207 Add `--json`
+- [x] CF-201 Add `--open vim`
+- [x] CF-202 Add `--open code`
+- [x] CF-203 Add `--open antigravity`
+- [x] CF-204 Result Selection Prompt
+- [x] CF-205 Add `--case-sensitive`
+- [x] CF-206 Add `--regex`
+- [x] CF-207 Add `--json`
 
 ## Phase 4 - Polish and Release
 
