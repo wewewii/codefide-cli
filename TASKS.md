@@ -23,7 +23,7 @@
 ## Phase 3 - Editor and Advanced Search
 
 - [x] CF-201 Add `--open vim`
-- [ ] CF-202 Add `--open code`
+- [x] CF-202 Add `--open code`
 - [ ] CF-203 Add `--open antigravity`
 - [ ] CF-204 Result Selection Prompt
 - [ ] CF-205 Add `--case-sensitive`

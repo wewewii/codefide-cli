@@ -62,24 +62,40 @@ def test_cli_reports_skipped_large_files(tmp_path: Path):
 def test_cli_opens_first_result_with_vim(tmp_path: Path, monkeypatch):
     file = tmp_path / "app.py"
     file.write_text("before\nlogin()\n", encoding="utf-8")
-    opened: list[Path] = []
+    opened: list[tuple[Path, str]] = []
 
-    def fake_open_vim_result(result):
-        opened.append(result.file_path)
+    def fake_open_result(result, editor: str):
+        opened.append((result.file_path, editor))
 
-    monkeypatch.setattr("codefind.main.open_vim_result", fake_open_vim_result)
+    monkeypatch.setattr("codefind.main.open_result", fake_open_result)
 
     result = runner.invoke(app, ["login", str(tmp_path), "--open", "vim"])
 
     assert result.exit_code == 0
-    assert opened == [file]
+    assert opened == [(file, "vim")]
+
+
+def test_cli_opens_first_result_with_code(tmp_path: Path, monkeypatch):
+    file = tmp_path / "app.py"
+    file.write_text("before\nlogin()\n", encoding="utf-8")
+    opened: list[tuple[Path, str]] = []
+
+    def fake_open_result(result, editor: str):
+        opened.append((result.file_path, editor))
+
+    monkeypatch.setattr("codefind.main.open_result", fake_open_result)
+
+    result = runner.invoke(app, ["login", str(tmp_path), "--open", "code"])
+
+    assert result.exit_code == 0
+    assert opened == [(file, "code")]
 
 
 def test_cli_rejects_unsupported_open_editor(tmp_path: Path):
     file = tmp_path / "app.py"
     file.write_text("login()\n", encoding="utf-8")
 
-    result = runner.invoke(app, ["login", str(tmp_path), "--open", "code"])
+    result = runner.invoke(app, ["login", str(tmp_path), "--open", "antigravity"])
 
     assert result.exit_code != 0
-    assert "--open currently supports only vim" in result.output
+    assert "--open currently supports only vim or code" in result.output

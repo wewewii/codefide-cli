@@ -22,6 +22,7 @@
 - `--context 0` hides surrounding lines
 - `--max-file-size` prints skipped summary
 - `--open vim` opens the first result with Vim
+- `--open code` opens the first result with VS Code
 
 ## Manual Tests
 
@@ -32,6 +33,7 @@ codefind "login" . --ignore vendor,tmp
 codefind "login" . --context 1
 codefind "login" . --max-file-size 1048576
 codefind "login" . --open vim
+codefind "login" . --open code
 codefind "JWT_SECRET" ./src
 codefind "invalid token" .
 ```

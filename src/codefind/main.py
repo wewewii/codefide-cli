@@ -5,7 +5,7 @@ import typer
 
 from codefind.scanner import SearchOptions, scan_directory
 from codefind.formatter import print_results
-from codefind.opener import open_vim_result
+from codefind.opener import open_result
 
 app = typer.Typer(help="Find text in a directory and show code context.", no_args_is_help=True)
 
@@ -49,8 +49,8 @@ def _run_search(
     )
     report = scan_directory(options)
     print_results(report.results, keyword=keyword, summary=report.summary)
-    if open_editor == "vim" and report.results:
-        open_vim_result(report.results[0])
+    if open_editor is not None and report.results:
+        open_result(report.results[0], open_editor)
 
 
 @app.command()
@@ -66,9 +66,9 @@ def main(
         min=1,
         help="Skip files larger than this size in bytes.",
     ),
-    open_editor: Optional[str] = typer.Option(None, "--open", help="Open first result in vim."),
+    open_editor: Optional[str] = typer.Option(None, "--open", help="Open first result in vim or code."),
 ) -> None:
     """Search KEYWORD inside PATH."""
-    if open_editor is not None and open_editor != "vim":
-        raise typer.BadParameter("--open currently supports only vim")
+    if open_editor is not None and open_editor not in {"vim", "code"}:
+        raise typer.BadParameter("--open currently supports only vim or code")
     _run_search(keyword, path, ext, ignore, context, max_file_size, open_editor)
