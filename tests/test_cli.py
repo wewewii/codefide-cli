@@ -57,3 +57,29 @@ def test_cli_reports_skipped_large_files(tmp_path: Path):
     assert result.exit_code == 0
     assert "No matches found." in result.output
     assert "Skipped 1 files: 1 too large." in result.output
+
+
+def test_cli_opens_first_result_with_vim(tmp_path: Path, monkeypatch):
+    file = tmp_path / "app.py"
+    file.write_text("before\nlogin()\n", encoding="utf-8")
+    opened: list[Path] = []
+
+    def fake_open_vim_result(result):
+        opened.append(result.file_path)
+
+    monkeypatch.setattr("codefind.main.open_vim_result", fake_open_vim_result)
+
+    result = runner.invoke(app, ["login", str(tmp_path), "--open", "vim"])
+
+    assert result.exit_code == 0
+    assert opened == [file]
+
+
+def test_cli_rejects_unsupported_open_editor(tmp_path: Path):
+    file = tmp_path / "app.py"
+    file.write_text("login()\n", encoding="utf-8")
+
+    result = runner.invoke(app, ["login", str(tmp_path), "--open", "code"])
+
+    assert result.exit_code != 0
+    assert "--open currently supports only vim" in result.output
