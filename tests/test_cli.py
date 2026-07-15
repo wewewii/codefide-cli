@@ -117,8 +117,8 @@ def test_cli_rejects_unsupported_open_editor(tmp_path: Path):
 
     result = runner.invoke(app, ["login", str(tmp_path), "--open", "emacs"])
 
-    assert result.exit_code != 0
-    assert "--open currently supports only vim, code, or antigravity" in result.output
+    assert result.exit_code == 2
+    assert "currently supports only vim, code, or antigravity" in result.output
 
 
 def test_cli_open_passes_multiple_results_for_selection(tmp_path: Path, monkeypatch):
