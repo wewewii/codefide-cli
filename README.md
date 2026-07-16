@@ -256,6 +256,24 @@ python3.11 -m venv /tmp/codefind-release-test
 /tmp/codefind-release-test/bin/codefind --help
 ```
 
+### Run the performance benchmark
+
+The benchmark creates temporary synthetic Python projects, measures scanner execution time, and
+removes the generated files when it finishes:
+
+```bash
+python scripts/benchmark.py
+```
+
+Override the dataset sizes or repeat count when needed:
+
+```bash
+python scripts/benchmark.py --files 1000 10000 --repeats 5
+```
+
+See [`docs/release/benchmark-results.md`](docs/release/benchmark-results.md) for the recorded
+baseline and methodology.
+
 ## Project Structure
 
 ```text
