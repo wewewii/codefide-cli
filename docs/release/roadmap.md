@@ -1,6 +1,6 @@
 # Roadmap
 
-## v0.1.0 MVP
+## v0.1.0 Initial Release
 
 - keyword search
 - recursive file traversal
@@ -8,31 +8,27 @@
 - context output
 - highlight keyword
 - summary
-
-## v0.2.0 Search Options
-
 - `--ext`
 - `--ignore`
 - `--context`
 - `--case-sensitive`
 - `--regex`
-
-## v0.3.0 Editor Workflow
-
 - `--open vim`
 - `--open code`
 - `--open antigravity`
 - result selection prompt
-
-## v0.4.0 Automation
-
 - `--json`
-- better exit codes
-- machine-readable errors
+- binary, oversized, and unreadable file handling
+- wheel and source distribution packaging
+- CI quality and package validation
+- performance benchmark baseline
 
-## Future
+## Planned
 
 - config file `.codefind.toml`
 - gitignore support
 - parallel scanning
 - ripgrep backend option
+- better exit codes
+- machine-readable errors
+- broader platform testing
