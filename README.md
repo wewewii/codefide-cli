@@ -305,6 +305,11 @@ codefind-cli/
 - [`docs/engineering`](docs/engineering/) — coding standards, branch strategy, and testing
 - [`docs/release`](docs/release/) — roadmap and release checklist
 
+## License
+
+Copyright (c) 2026 PITIPHAT JADNUANG (wewewii). This project is licensed under the
+[MIT License](LICENSE).
+
 ## Roadmap
 
 Planned improvements include `.gitignore` support, a project configuration file, parallel
