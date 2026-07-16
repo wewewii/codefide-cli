@@ -15,6 +15,14 @@
 
 ```bash
 python -m build
+python -m twine check dist/*
+```
+
+Expected artifacts:
+
+```txt
+dist/codefind_cli-0.1.0.tar.gz
+dist/codefind_cli-0.1.0-py3-none-any.whl
 ```
 
 ## Tag

@@ -30,3 +30,9 @@ jobs:
         run: ./scripts/dev-check.sh
         env:
           PYTHON: python
+
+      - name: Build source and wheel distributions
+        run: python -m build
+
+      - name: Validate distribution metadata
+        run: python -m twine check dist/*

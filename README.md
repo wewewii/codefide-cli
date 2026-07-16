@@ -232,6 +232,30 @@ Run only the tests with:
 pytest
 ```
 
+### Build the package
+
+Build both the source distribution and the pure-Python wheel:
+
+```bash
+python -m build
+python -m twine check dist/*
+```
+
+The generated artifacts are written to `dist/`:
+
+```text
+codefind_cli-0.1.0.tar.gz
+codefind_cli-0.1.0-py3-none-any.whl
+```
+
+Test the wheel in a clean virtual environment before publishing a release:
+
+```bash
+python3.11 -m venv /tmp/codefind-release-test
+/tmp/codefind-release-test/bin/python -m pip install dist/codefind_cli-0.1.0-py3-none-any.whl
+/tmp/codefind-release-test/bin/codefind --help
+```
+
 ## Project Structure
 
 ```text

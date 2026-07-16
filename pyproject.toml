@@ -9,6 +9,18 @@ description = "Terminal code/text finder with context output and editor open sup
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [{ name = "CodeFind Maintainer" }]
+keywords = ["cli", "code-search", "developer-tools", "search", "terminal"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Operating System :: MacOS",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: Software Development",
+  "Topic :: Text Processing",
+]
 dependencies = [
   "typer>=0.12.0",
   "rich>=13.0.0",
@@ -16,6 +28,8 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
+  "build>=1.2.0",
+  "twine>=5.0.0",
   "pytest>=8.0.0",
   "ruff>=0.6.0",
   "mypy>=1.10.0",
@@ -23,6 +37,12 @@ dev = [
 
 [project.scripts]
 codefind = "codefind.main:app"
+
+[project.urls]
+Homepage = "https://github.com/wewewii/codefide-cli"
+Documentation = "https://github.com/wewewii/codefide-cli#readme"
+Issues = "https://github.com/wewewii/codefide-cli/issues"
+Repository = "https://github.com/wewewii/codefide-cli.git"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/codefind"]
