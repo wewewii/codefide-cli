@@ -28,6 +28,22 @@ Windows is not a primary target for the current release.
 
 ## Installation
 
+### Install release v0.1.0 with pipx
+
+After the `v0.1.0` tag is published, install the isolated command-line application directly from
+GitHub:
+
+```bash
+pipx install "git+https://github.com/wewewii/codefide-cli.git@v0.1.0"
+codefind --help
+```
+
+Alternatively, download the wheel from the GitHub release and install it with:
+
+```bash
+pipx install codefind_cli-0.1.0-py3-none-any.whl
+```
+
 ### Install from source
 
 ```bash
@@ -297,6 +313,7 @@ codefind-cli/
 
 ## Documentation
 
+- [`CHANGELOG.md`](CHANGELOG.md) — version history and notable changes
 - [`docs/project-brief`](docs/project-brief/) — product vision, requirements, and use cases
 - [`docs/phase-1`](docs/phase-1/) — MVP architecture and implementation plan
 - [`docs/phase-2`](docs/phase-2/) — robust search options and file handling
