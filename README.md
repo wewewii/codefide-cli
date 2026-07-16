@@ -1,5 +1,7 @@
 # CodeFind CLI
 
+[![CI](https://github.com/wewewii/codefide-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/wewewii/codefide-cli/actions/workflows/ci.yml)
+
 CodeFind is a command-line tool for searching text across a project directory. It displays
 matching file paths, line numbers, highlighted matches, and surrounding context in a readable
 terminal format. Results can also be exported as JSON or opened directly in a supported editor.

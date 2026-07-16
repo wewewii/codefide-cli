@@ -34,7 +34,7 @@
 
 - [x] CF-301 Improve README
 - [x] CF-302 Add Dev Script
-- [ ] CF-303 Add GitHub Actions
+- [x] CF-303 Add GitHub Actions
 - [ ] CF-304 Package Release
 - [ ] CF-305 Performance Benchmark
 - [ ] CF-306 Release v0.1.0
