@@ -33,7 +33,7 @@
 ## Phase 4 - Polish and Release
 
 - [x] CF-301 Improve README
-- [ ] CF-302 Add Dev Script
+- [x] CF-302 Add Dev Script
 - [ ] CF-303 Add GitHub Actions
 - [ ] CF-304 Package Release
 - [ ] CF-305 Performance Benchmark

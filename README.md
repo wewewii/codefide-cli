@@ -210,9 +210,11 @@ The selected editor command must be installed and available on `PATH`.
 Install the project with its development dependencies, then run all quality checks:
 
 ```bash
-source .venv/bin/activate
-bash scripts/dev-check.sh
+./scripts/dev-check.sh
 ```
+
+The script uses the repository's `.venv` automatically when it is available. Otherwise, it uses
+`python3` or the interpreter specified with the `PYTHON` environment variable.
 
 The script runs:
 
