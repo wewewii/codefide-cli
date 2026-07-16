@@ -32,7 +32,7 @@
 
 ## Phase 4 - Polish and Release
 
-- [ ] CF-301 Improve README
+- [x] CF-301 Improve README
 - [ ] CF-302 Add Dev Script
 - [ ] CF-303 Add GitHub Actions
 - [ ] CF-304 Package Release
