@@ -37,4 +37,4 @@
 - [x] CF-303 Add GitHub Actions
 - [x] CF-304 Package Release
 - [x] CF-305 Performance Benchmark
-- [ ] CF-306 Release v0.1.0
+- [x] CF-306 Release v0.1.0
